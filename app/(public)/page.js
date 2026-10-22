@@ -1,6 +1,6 @@
-
 import Link from "next/link";
 import styles from "./page.module.css";
+import FeaturedCarCard from "../../components/cars/FeaturedCarCard";
 
 const heroSlides = [
   {
@@ -14,6 +14,42 @@ const heroSlides = [
   {
     image: "/images/hero/premium-ride.jpg",
     alt: "A premium car in an urban setting",
+  },
+];
+
+const featuredCars = [
+  {
+    id: "city-sedan",
+    make: "Toyota",
+    name: "Corolla",
+    price: 2500,
+    seats: 5,
+    fuel: "Petrol",
+    badge: "NEW",
+    image: "/images/cars/toyota-corolla.jpg",
+    imageAlt: "Toyota Corolla sedan",
+  },
+  {
+    id: "family-suv",
+    make: "Hyundai",
+    name: "Tucson",
+    price: 4500,
+    seats: 5,
+    fuel: "Petrol",
+    badge: "POPULAR",
+    image: "/images/cars/hyundai-tucson.jpg",
+    imageAlt: "Hyundai Tucson SUV",
+  },
+  {
+    id: "premium-sedan",
+    make: "Mercedes-Benz",
+    name: "C-Class",
+    price: 7000,
+    seats: 5,
+    fuel: "Petrol",
+    badge: "PREMIUM",
+    image: "/images/cars/mercedes-c-class.jpg",
+    imageAlt: "Mercedes-Benz C-Class sedan",
   },
 ];
 
@@ -91,6 +127,36 @@ export default function HomePage() {
           >
             Explore available cars
           </Link>
+        </div>
+      </section>
+
+      <section className={styles.featured}>
+        <div className={`container ${styles.featuredInner}`}>
+          <div className={styles.featuredHeading}>
+            <div>
+              <p className={styles.featuredEyebrow}>HANDPICKED FOR YOU</p>
+              <h2>Find your next favorite ride.</h2>
+              <p className={styles.featuredDescription}>
+                Explore a few of the rides you could discover with Sheggar Wheels.
+              </p>
+            </div>
+
+            <Link href="/cars" className={styles.seeAll}>
+              See all cars
+            </Link>
+          </div>
+
+          <div className={styles.featuredGrid}>
+            {featuredCars.map((car) => (
+              <FeaturedCarCard key={car.id} car={car} />
+            ))}
+          </div>
+
+          <div className={styles.featuredMobileLink}>
+            <Link href="/cars" className="button button-primary">
+              Browse all cars
+            </Link>
+          </div>
         </div>
       </section>
     </>
