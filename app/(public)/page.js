@@ -159,6 +159,49 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      
+      <section className={styles.about}>
+        <div className={`container ${styles.aboutInner}`}>
+          <div className={styles.aboutHeading}>
+            <p className={styles.aboutEyebrow}>OUR STORY</p>
+
+            <h2>More than a ride. A better way to move.</h2>
+
+            <p className={styles.aboutLead}>
+              Built around freedom, flexibility, and bringing people
+              together through mobility.
+            </p>
+          </div>
+
+          <div className={styles.aboutContent}>
+            <p>
+              Sheggar Wheels is a car-rental marketplace concept designed
+              to connect people looking for convenient transportation
+              with car owners who want to make their vehicles available
+              to others.
+            </p>
+
+            <p>
+              Our vision is to make discovering and renting a car simpler
+              and more flexible, whether someone needs a practical ride
+              for everyday plans, a comfortable vehicle for a family
+              trip, or something special for an important occasion.
+            </p>
+
+            <p>
+              We believe mobility should offer more choice. By bringing
+              renters and vehicle owners together in one accessible
+              platform, Sheggar Wheels aims to create a more convenient
+              experience built on transparency, trust, and flexibility.
+            </p>
+
+            <Link href="/cars" className={styles.aboutLink}>
+              Discover your next ride <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </div>
+      </section>
     </>
   );
 }

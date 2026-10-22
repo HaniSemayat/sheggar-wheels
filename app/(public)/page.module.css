@@ -187,7 +187,6 @@
   margin-top: 28px;
 }
 
-
 /* Featured cars */
 
 .featured {
@@ -257,6 +256,78 @@
 .featuredMobileLink {
   display: none;
 }
+
+
+/* About Sheggar Wheels */
+
+.about {
+  padding-block: 96px;
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+.aboutInner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: clamp(40px, 7vw, 100px);
+}
+
+.aboutHeading {
+  position: sticky;
+  top: 32px;
+}
+
+.aboutEyebrow {
+  margin: 0 0 16px;
+  color: var(--color-brand);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.aboutHeading h2 {
+  max-width: 480px;
+  margin: 0;
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.05em;
+}
+
+.aboutLead {
+  max-width: 420px;
+  margin: 22px 0 0;
+  color: var(--color-text-muted);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.aboutContent {
+  padding-top: 8px;
+}
+
+.aboutContent p {
+  margin: 0 0 22px;
+  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.95;
+}
+
+.aboutLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  color: var(--color-brand);
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.aboutLink:hover {
+  color: var(--color-brand-hover);
+}
+
 
 @media (max-width: 900px) {
   .featuredGrid {
@@ -333,6 +404,27 @@
 
   .slide:first-child {
     opacity: 1;
+  }
+
+    .about {
+    padding-block: 68px;
+  }
+
+  .aboutInner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .aboutHeading {
+    position: static;
+  }
+
+  .aboutHeading h2 {
+    max-width: 560px;
+  }
+
+  .aboutLead {
+    font-size: 16px;
   }
 }
 
