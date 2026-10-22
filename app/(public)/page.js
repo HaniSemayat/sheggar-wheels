@@ -202,6 +202,68 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      
+      <section className={styles.howItWorks}>
+        <div className={`container ${styles.howInner}`}>
+          <div className={styles.howHeading}>
+            <p className={styles.howEyebrow}>SIMPLE FROM START TO FINISH</p>
+
+            <h2>Your next journey in three steps.</h2>
+
+            <p className={styles.howDescription}>
+              Finding your next ride does not have to be complicated.
+              Here is how to get started with Sheggar Wheels.
+            </p>
+          </div>
+
+          <div className={styles.stepsGrid}>
+            <article className={styles.stepCard}>
+              <div className={styles.stepIcon}>
+                <span>01</span>
+              </div>
+
+              <h3>Find your ride</h3>
+
+              <p>
+                Browse cars and explore options based on your budget,
+                plans, and preferences.
+              </p>
+            </article>
+
+            <article className={styles.stepCard}>
+              <div className={styles.stepIcon}>
+                <span>02</span>
+              </div>
+
+              <h3>Request your booking</h3>
+
+              <p>
+                Choose your dates and submit a booking request to get
+                the process started.
+              </p>
+            </article>
+
+            <article className={styles.stepCard}>
+              <div className={styles.stepIcon}>
+                <span>03</span>
+              </div>
+
+              <h3>Enjoy the journey</h3>
+
+              <p>
+                Once your booking is confirmed, get ready for the road
+                ahead.
+              </p>
+            </article>
+          </div>
+
+          <Link href="/cars" className={`button button-primary ${styles.howButton}`}>
+            Find a car
+          </Link>
+        </div>
+      </section>
+
     </>
   );
 }
