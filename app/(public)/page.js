@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styles from "./page.module.css";
 import FeaturedCarCard from "../../components/cars/FeaturedCarCard";
+import CustomerReviews from "../../components/CustomerReviews";
 
 const heroSlides = [
   {
@@ -264,6 +265,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      <CustomerReviews />
     </>
   );
 }
