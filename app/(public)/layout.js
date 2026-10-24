@@ -1,7 +1,7 @@
 
 import { Suspense } from "react";
-import SiteHeader from "../../components/SiteHeader";
-import SiteFooter from "../../components/SiteFooter";
+import SiteHeader from "../../components/layout/SiteHeader";
+import SiteFooter from "../../components/layout/SiteFooter";
 
 export default function PublicLayout({ children }) {
   return (

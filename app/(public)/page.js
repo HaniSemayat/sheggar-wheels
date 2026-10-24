@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styles from "./page.module.css";
 import FeaturedCarCard from "../../components/cars/FeaturedCarCard";
-import CustomerReviews from "../../components/CustomerReviews";
+import CustomerReviews from "../../components/home/CustomerReviews";
 
 const heroSlides = [
   {
