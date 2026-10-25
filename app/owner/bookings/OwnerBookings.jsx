@@ -7,7 +7,7 @@ import { getBookings, getCars } from "../../../lib/demo-data";
 import { STORAGE_KEYS, writeStorage } from "../../../lib/storage";
 import styles from "./OwnerBookings.module.css";
 
-const OWNER_ID = "user-owner-01";
+const DEFAULT_OWNER_ID = "owner-001";
 
 const money = (amount) =>
   `${Number(amount || 0).toLocaleString("en-ET")} ETB`;
@@ -23,6 +23,7 @@ const dateLabel = (value) =>
 
 export default function OwnerBookings() {
   const [bookings, setBookings] = useState([]);
+  const [ownerId, setOwnerId] = useState(DEFAULT_OWNER_ID);
   const [cars, setCars] = useState([]);
   const [filter, setFilter] = useState("all");
   const [message, setMessage] = useState("");
@@ -32,11 +33,18 @@ export default function OwnerBookings() {
     // Hydrate the dashboard from browser storage.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setBookings(getBookings());
+    const activeUser = window.localStorage.getItem("sw_current_user_v1");
+    if (activeUser) {
+      try {
+        const parsedUser = JSON.parse(activeUser);
+        if (parsedUser.role === "owner") setOwnerId(parsedUser.id);
+      } catch {}
+    }
     setCars(getCars());
     setReady(true);
   }, []);
 
-  const ownerCars = cars.filter((car) => car.ownerId === OWNER_ID);
+  const ownerCars = cars.filter((car) => car.ownerId === ownerId);
   const ownerCarIds = new Set(ownerCars.map((car) => car.id));
 
   const ownerBookings = bookings
@@ -67,7 +75,7 @@ export default function OwnerBookings() {
 
   const pendingCount = bookings.filter(
     (booking) =>
-      (booking.ownerId === OWNER_ID || ownerCarIds.has(booking.carId)) &&
+      (booking.ownerId === ownerId || ownerCarIds.has(booking.carId)) &&
       booking.status === "pending"
   ).length;
 
@@ -182,3 +190,4 @@ export default function OwnerBookings() {
     </main>
   );
 }
+

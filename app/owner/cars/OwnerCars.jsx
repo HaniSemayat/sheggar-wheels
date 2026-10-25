@@ -6,7 +6,7 @@ import { getCars } from "../../../lib/demo-data";
 import { STORAGE_KEYS, writeStorage } from "../../../lib/storage";
 import styles from "./OwnerCars.module.css";
 
-const OWNER_ID = "user-owner-01";
+const DEFAULT_OWNER_ID = "owner-001";
 
 const emptyForm = {
   make: "",
@@ -23,6 +23,7 @@ const emptyForm = {
 
 export default function OwnerCars() {
   const [cars, setCars] = useState([]);
+  const [ownerId, setOwnerId] = useState(DEFAULT_OWNER_ID);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState("");
@@ -32,6 +33,13 @@ export default function OwnerCars() {
       // Intentional: hydrate the owner dashboard from persisted browser data.
       // eslint-disable-next-line react-hooks/set-state-in-effect -- Load persisted cars on mount.
       setCars(getCars());
+      const activeUser = window.localStorage.getItem("sw_current_user_v1");
+      if (activeUser) {
+        try {
+          const parsedUser = JSON.parse(activeUser);
+          if (parsedUser.role === "owner") setOwnerId(parsedUser.id);
+        } catch {}
+      }
       setReady(true);
     }, []);
 
@@ -120,7 +128,7 @@ export default function OwnerCars() {
       category: form.category,
       description,
       status: existing?.status || "available",
-      ownerId: existing?.ownerId || OWNER_ID,
+      ownerId: existing?.ownerId || ownerId,
       photos: existing?.photos || {
         front: "",
         side: "",
@@ -143,7 +151,7 @@ export default function OwnerCars() {
     setEditingId(null);
   }
 
-  const myCars = cars.filter((car) => car.ownerId === OWNER_ID);
+  const myCars = cars.filter((car) => car.ownerId === ownerId || (ownerId === DEFAULT_OWNER_ID && car.ownerId === "user-owner-01"));
 
   if (!ready) {
     return <main className={styles.page}><p>Loading your listings...</p></main>;
@@ -278,6 +286,7 @@ export default function OwnerCars() {
     </main>
   );
 }
+
 
 
 
