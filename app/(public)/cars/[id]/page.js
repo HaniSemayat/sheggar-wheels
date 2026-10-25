@@ -1,4 +1,4 @@
-
+﻿
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
@@ -14,6 +14,7 @@ import {
 
 import { demoCars } from "../../../../data/cars";
 import CarPhotoGallery from "../../../../components/cars/CarPhotoGallery";
+import BookingForm from "../../../../components/bookings/BookingForm";
 import styles from "./CarDetails.module.css";
 
 export async function generateMetadata({ params }) {
@@ -33,7 +34,7 @@ function CarDetailsFallback() {
   return (
     <div className={styles.page}>
       <div className={styles.container} aria-busy="true">
-        Loading vehicle details…
+        Loading vehicle detailsâ€¦
       </div>
     </div>
   );
@@ -58,7 +59,7 @@ async function CarDetailsContent({ params }) {
         <div className={styles.heading}>
           <div>
             <p className={styles.eyebrow}>
-              {car.category} <span>·</span> {car.year}
+              {car.category} <span>Â·</span> {car.year}
             </p>
 
             <h1>
@@ -159,7 +160,7 @@ async function CarDetailsContent({ params }) {
             </button>
 
             <p className={styles.demoNote}>
-              <span>Demo data</span> · No payment will be collected.
+              <span>Demo data</span> Â· No payment will be collected.
             </p>
           </aside>
         </div>
@@ -175,3 +176,4 @@ export default function CarDetailsPage({ params }) {
     </Suspense>
   );
 }
+
