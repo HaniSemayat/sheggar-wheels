@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -26,7 +26,7 @@ export default function BookingForm({ car }) {
   }, [startDate, endDate]);
 
   const total = days * Number(car.pricePerDay || 0);
-  const unavailable = car.status && car.status !== "available";
+  const unavailable = Boolean(car.status) && !["available", "approved"].includes(car.status);
 
   function handleBooking(event) {
     event.preventDefault();
