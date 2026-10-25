@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -128,6 +128,7 @@ export default function OwnerCars() {
       category: form.category,
       description,
       status: existing?.status || "available",
+      moderationStatus: existing?.moderationStatus || (editingId ? "approved" : "pending"),
       ownerId: existing?.ownerId || ownerId,
       photos: existing?.photos || {
         front: "",

@@ -1,4 +1,4 @@
-﻿
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -132,7 +132,28 @@ export default function SiteHeader() {
                     <span>{user.email || ""}</span>
                   </div>
 
+                  {user.role === "admin" && (
+
+                    <Link href="/admin" role="menuitem" className={styles["account-dropdown-link"]} onClick={() => setMenuOpen(false)}>
+
+                      Admin Dashboard
+
+                    </Link>
+
+                  )}
+
+                  {user.role === "owner" && (
+
+                    <Link href="/owner/cars" role="menuitem" className={styles["account-dropdown-link"]} onClick={() => setMenuOpen(false)}>
+
+                      Owner Dashboard
+
+                    </Link>
+
+                  )}
+
                   <Link
+
                     href="/profile"
                     role="menuitem"
                     className={styles["account-dropdown-link"]}

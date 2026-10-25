@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -81,7 +81,7 @@ export default function AccountForm({ mode }) {
       role: user.role,
     });
 
-    router.push(user.role === "owner" ? "/owner/cars" : "/cars");
+    router.push(user.role === "admin" ? "/admin" : user.role === "owner" ? "/owner/cars" : "/cars");
     router.refresh();
   }
 
@@ -158,14 +158,20 @@ export default function AccountForm({ mode }) {
 
         {!isSignup && (
           <div className={styles.demo}>
-            <strong>Demo account</strong>
-            <span>renter@sheggar.demo</span>
-            <span>Password: demo123</span>
-            <button type="button" onClick={() => {
-              setEmail("renter@sheggar.demo");
-              setPassword("demo123");
-              setMessage("");
-            }}>Use demo credentials</button>
+            <strong>Demo accounts (password: demo123)</strong>
+            {[
+              ["Renter", "renter@sheggar.demo"],
+              ["Owner", "owner@sheggar.demo"],
+              ["Admin", "admin@sheggar.demo"],
+            ].map(([label, demoEmail]) => (
+              <button key={demoEmail} type="button" onClick={() => {
+                setEmail(demoEmail);
+                setPassword("demo123");
+                setMessage("");
+              }}>
+                Use {label} demo
+              </button>
+            ))}
           </div>
         )}
 
@@ -183,4 +189,5 @@ export default function AccountForm({ mode }) {
     </main>
   );
 }
+
 
