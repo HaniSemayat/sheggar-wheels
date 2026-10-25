@@ -1,4 +1,4 @@
-
+﻿
 import Link from "next/link";
 import { CarFront } from "lucide-react";
 import styles from "./SiteHeader.module.css";
@@ -6,6 +6,7 @@ import styles from "./SiteHeader.module.css";
 const navigation = [
   { label: "Home", href: "/" },
   { label: "Browse Cars", href: "/cars" },
+  { label: "My Bookings", href: "/my-bookings" },
   { label: "Sell Your Car", href: "/owner/cars/new" },
 ];
 
@@ -53,3 +54,4 @@ export default function SiteHeader() {
     </header>
   );
 }
+
