@@ -144,20 +144,7 @@ async function CarDetailsContent({ params }) {
 
             <div className={styles.bookingDivider} />
 
-            <div className={styles.bookingNote}>
-              <ShieldCheck size={20} aria-hidden="true" />
-              <p>
-                Demo listing. Booking functionality is coming next.
-              </p>
-            </div>
-
-            <button
-              className={styles.bookingButton}
-              type="button"
-              disabled
-            >
-              Booking coming soon
-            </button>
+            <BookingForm car={car} />
 
             <p className={styles.demoNote}>
               <span>Demo data</span> Â· No payment will be collected.
@@ -176,4 +163,5 @@ export default function CarDetailsPage({ params }) {
     </Suspense>
   );
 }
+
 
