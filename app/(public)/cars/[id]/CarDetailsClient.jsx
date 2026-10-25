@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -14,6 +14,7 @@ import { demoCars } from "../../../../data/cars";
 import { getCars } from "../../../../lib/demo-data";
 import CarPhotoGallery from "../../../../components/cars/CarPhotoGallery";
 import BookingForm from "../../../../components/bookings/BookingForm";
+import ReviewSection from "./ReviewSection";
 import styles from "./CarDetails.module.css";
 
 export default function CarDetailsClient({ id }) {
@@ -125,6 +126,8 @@ export default function CarDetailsClient({ id }) {
             </p>
           </aside>
         </div>
+
+        <ReviewSection carId={car.id} />
       </div>
     </div>
   );

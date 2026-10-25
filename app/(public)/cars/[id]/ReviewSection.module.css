@@ -1,0 +1,257 @@
+﻿.section {
+  margin-top: 44px;
+  padding-top: 36px;
+  border-top: 1px solid var(--color-border);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 29px);
+  letter-spacing: -0.035em;
+}
+
+.eyebrow {
+  margin: 0 0 9px;
+  color: var(--color-brand);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .13em;
+}
+
+.subtitle {
+  margin: 9px 0 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 3px 7px;
+  flex-shrink: 0;
+  color: #d99a16;
+}
+
+.summary strong {
+  color: var(--color-text);
+  font-size: 23px;
+}
+
+.summary span {
+  grid-column: 1 / -1;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.form {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.form h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ratingPicker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.starButton {
+  display: inline-grid;
+  place-items: center;
+  padding: 3px;
+  border: 0;
+  background: transparent;
+  color: #d99a16;
+  cursor: pointer;
+}
+
+.starButton:focus-visible,
+.submitButton:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
+}
+
+.ratingPicker > span {
+  margin-left: 8px;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.form textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-background, white);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.form textarea:focus {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 1px;
+}
+
+.formFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.formFooter > span {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 15px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.message, .notice {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  padding: 30px 20px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.empty strong {
+  color: var(--color-text);
+}
+
+.empty p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.reviewList {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.review {
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.reviewTop {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.avatar {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+  font-weight: 800;
+}
+
+.reviewer {
+  display: grid;
+  gap: 4px;
+}
+
+.reviewer strong {
+  font-size: 13px;
+}
+
+.reviewer span {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.reviewStars {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+  color: #d99a16;
+}
+
+.comment {
+  margin: 15px 0 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 560px) {
+  .section {
+    margin-top: 32px;
+    padding-top: 28px;
+  }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .form, .review {
+    padding: 16px;
+  }
+
+  .reviewStars {
+    gap: 0;
+  }
+}
