@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -26,33 +26,71 @@ export default function BookingForm({ car }) {
   }, [startDate, endDate]);
 
   const total = days * Number(car.pricePerDay || 0);
+  const unavailable = car.status && car.status !== "available";
 
   function handleBooking(event) {
     event.preventDefault();
     setMessage("");
 
-    if (!startDate || !endDate || days < 1) {
+    if (saving) return;
+
+    if (!startDate || !endDate || days < 1 || startDate < minDate) {
       setMessage("Choose a valid pickup date and a return date after it.");
       return;
     }
 
-    const unavailable = car.unavailableDates || [];
-    const conflict = unavailable.some(
-      (date) => date >= startDate && date < endDate
-    );
-
-    if (conflict) {
-      setMessage("Those dates include an unavailable day. Please choose different dates.");
+    if (unavailable) {
+      setMessage("This car is not currently available for booking.");
       return;
     }
 
-    setSaving(true);
+    let activeUser;
+
+    try {
+      activeUser = JSON.parse(
+        window.localStorage.getItem("sw_current_user_v1") || "null"
+      );
+    } catch {
+      activeUser = null;
+    }
+
+    if (!activeUser) {
+      setMessage("Please sign in as a renter before requesting a booking.");
+      return;
+    }
+
+    if (activeUser.role !== "renter") {
+      setMessage("Only renter accounts can request a booking. Please sign in as a renter.");
+      return;
+    }
+
+    if (activeUser.id === car.ownerId) {
+      setMessage("You cannot book your own car.");
+      return;
+    }
 
     const bookings = getBookings();
+
+    const dateConflict = bookings.some((booking) => {
+      if (booking.carId !== car.id) return false;
+      if (!["pending", "confirmed"].includes(booking.status)) return false;
+
+      return startDate < booking.endDate && endDate > booking.startDate;
+    });
+
+    const unavailableConflict = (car.unavailableDates || []).some(
+      (date) => date >= startDate && date < endDate
+    );
+
+    if (dateConflict || unavailableConflict) {
+      setMessage("Those dates are unavailable. Please choose different dates.");
+      return;
+    }
+
     const newBooking = {
       id: `booking-${Date.now()}`,
       carId: car.id,
-      renterId: "renter-001",
+      renterId: activeUser.id,
       ownerId: car.ownerId,
       startDate,
       endDate,
@@ -60,6 +98,8 @@ export default function BookingForm({ car }) {
       status: "pending",
       createdAt: new Date().toISOString(),
     };
+
+    setSaving(true);
 
     const success = writeStorage(STORAGE_KEYS.bookings, [
       ...bookings,
@@ -77,6 +117,14 @@ export default function BookingForm({ car }) {
     setStartDate("");
     setEndDate("");
     router.refresh();
+  }
+
+  if (unavailable) {
+    return (
+      <p className={styles.message} role="status">
+        This vehicle is currently unavailable for booking.
+      </p>
+    );
   }
 
   return (

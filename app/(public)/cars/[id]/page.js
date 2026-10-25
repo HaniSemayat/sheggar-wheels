@@ -1,5 +1,6 @@
 ﻿import CarDetailsClient from "./CarDetailsClient";
 import { demoCars } from "../../../../data/cars";
+export const instant = false;
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -17,3 +18,4 @@ export default async function CarDetailsPage({ params }) {
   const { id } = await params;
   return <CarDetailsClient id={id} />;
 }
+

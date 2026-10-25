@@ -4,8 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CarFront, Eye, EyeOff } from "lucide-react";
-import { getUsers } from "../../lib/demo-data";
-import { STORAGE_KEYS, writeStorage } from "../../lib/storage";
+import { getUsers } from "../lib/demo-data";
+import { STORAGE_KEYS, writeStorage } from "../lib/storage";
 import styles from "./AccountForm.module.css";
 
 export default function AccountForm({ mode }) {
@@ -183,3 +183,4 @@ export default function AccountForm({ mode }) {
     </main>
   );
 }
+

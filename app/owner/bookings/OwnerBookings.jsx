@@ -30,18 +30,34 @@ export default function OwnerBookings() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Hydrate the dashboard from browser storage.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setBookings(getBookings());
-    const activeUser = window.localStorage.getItem("sw_current_user_v1");
-    if (activeUser) {
+    const refreshDashboard = () => {
+      setBookings(getBookings());
+      setCars(getCars());
+
       try {
-        const parsedUser = JSON.parse(activeUser);
-        if (parsedUser.role === "owner") setOwnerId(parsedUser.id);
-      } catch {}
-    }
-    setCars(getCars());
-    setReady(true);
+        const activeUser = JSON.parse(
+          window.localStorage.getItem("sw_current_user_v1") || "null"
+        );
+
+        if (activeUser?.role === "owner") {
+          setOwnerId(activeUser.id);
+        }
+
+        setReady(true);
+      } catch {
+        setReady(true);
+      }
+    };
+
+    refreshDashboard();
+
+    window.addEventListener("sheggar-storage-change", refreshDashboard);
+    window.addEventListener("storage", refreshDashboard);
+
+    return () => {
+      window.removeEventListener("sheggar-storage-change", refreshDashboard);
+      window.removeEventListener("storage", refreshDashboard);
+    };
   }, []);
 
   const ownerCars = cars.filter((car) => car.ownerId === ownerId);
@@ -73,10 +89,8 @@ export default function OwnerBookings() {
     return <main className={styles.page}><p>Loading booking requests…</p></main>;
   }
 
-  const pendingCount = bookings.filter(
-    (booking) =>
-      (booking.ownerId === ownerId || ownerCarIds.has(booking.carId)) &&
-      booking.status === "pending"
+  const pendingCount = ownerBookings.filter(
+    (booking) => booking.status === "pending"
   ).length;
 
   return (
@@ -190,4 +204,5 @@ export default function OwnerBookings() {
     </main>
   );
 }
+
 
