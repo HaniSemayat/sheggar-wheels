@@ -11,7 +11,7 @@ const navigation = [
   { label: "Home", href: "/" },
   { label: "Browse Cars", href: "/cars" },
   { label: "My Bookings", href: "/my-bookings" },
-  { label: "Sell Your Car", href: "/owner/cars/new" },
+  { label: "Sell Your Car", href: "/owner/cars" },
 ];
 
 export default function SiteHeader() {
@@ -184,3 +184,4 @@ export default function SiteHeader() {
     </header>
   );
 }
+

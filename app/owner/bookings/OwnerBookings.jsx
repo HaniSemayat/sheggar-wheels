@@ -69,8 +69,43 @@ export default function OwnerBookings() {
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     
   function updateStatus(bookingId, status) {
-    const updated = bookings.map((booking) =>
-      booking.id === bookingId ? { ...booking, status } : booking
+    let activeUser;
+
+    try {
+      activeUser = JSON.parse(
+        window.localStorage.getItem("sw_current_user_v1") || "null"
+      );
+    } catch {
+      activeUser = null;
+    }
+
+    if (!activeUser || activeUser.role !== "owner" || activeUser.id !== ownerId) {
+      setMessage("Access denied. Sign in with the correct owner account.");
+      return;
+    }
+
+    if (!["confirmed", "rejected"].includes(status)) {
+      setMessage("Invalid booking action.");
+      return;
+    }
+
+    const booking = bookings.find((item) => item.id === bookingId);
+    const car = booking && cars.find(
+      (item) => item.id === booking.carId && item.ownerId === activeUser.id
+    );
+
+    if (!booking || !car) {
+      setMessage("Booking not found in your listings.");
+      return;
+    }
+
+    if (booking.status !== "pending") {
+      setMessage("Only pending booking requests can be updated.");
+      return;
+    }
+
+    const updated = bookings.map((item) =>
+      item.id === bookingId ? { ...item, status } : item
     );
 
     if (writeStorage(STORAGE_KEYS.bookings, updated)) {
@@ -81,12 +116,8 @@ export default function OwnerBookings() {
           : "Booking request rejected."
       );
     } else {
-      setMessage("Could not update this booking. Please try again.");
+      setMessage("Could not save the booking update. Please try again.");
     }
-  }
-
-  if (!ready) {
-    return <main className={styles.page}><p>Loading booking requests…</p></main>;
   }
 
   const pendingCount = ownerBookings.filter(
@@ -204,5 +235,6 @@ export default function OwnerBookings() {
     </main>
   );
 }
+
 
 
