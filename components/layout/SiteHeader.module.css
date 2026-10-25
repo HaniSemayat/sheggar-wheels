@@ -64,6 +64,128 @@
   min-height: 40px;
 }
 
+
+.account-menu {
+  position: relative;
+}
+
+.account-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 999px;
+  background: var(--surface-color, #fff);
+  color: var(--text-color, #171717);
+  cursor: pointer;
+  font: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.account-trigger:hover {
+  border-color: #6b4eff;
+}
+
+.account-avatar {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  background: #6b4eff;
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.account-name {
+  max-width: 140px;
+  overflow: hidden;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-dropdown {
+  position: absolute;
+  top: calc(100% + 0.65rem);
+  right: 0;
+  z-index: 100;
+  width: 240px;
+  padding: 0.45rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 12%);
+}
+
+.account-dropdown-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  overflow: hidden;
+}
+
+.account-dropdown-heading strong,
+.account-dropdown-heading span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-dropdown-heading strong {
+  color: #171717;
+  font-size: 0.95rem;
+}
+
+.account-dropdown-heading span {
+  color: #737373;
+  font-size: 0.8rem;
+}
+
+.account-dropdown-link {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.75rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #333;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  text-decoration: none;
+}
+
+.account-dropdown-link:hover {
+  background: #f4f1ff;
+  color: #5535df;
+}
+
+@media (max-width: 640px) {
+  .account-name {
+    display: none;
+  }
+
+  .account-trigger {
+    gap: 0.3rem;
+  }
+
+  .account-dropdown {
+    right: 0;
+    width: 220px;
+  }
+}
+
+
 /* Mobile layout */
 
 @media (max-width: 760px) {
@@ -116,3 +238,4 @@
     gap: 16px;
   }
 }
+

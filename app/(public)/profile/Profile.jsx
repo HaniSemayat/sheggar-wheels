@@ -13,17 +13,21 @@ export default function Profile() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    try {
-      setUser(
-        JSON.parse(
-          window.localStorage.getItem("sw_current_user_v1") || "null"
-        )
-      );
-    } catch {
-      setUser(null);
-    }
-    setReady(true);
-  }, []);
+    const loadUser = () => {
+        try {
+        setUser(
+            JSON.parse(
+            window.localStorage.getItem("sw_current_user_v1") || "null"
+            )
+        );
+        } catch {
+        setUser(null);
+        }
+    };
+
+    const timer = window.setTimeout(loadUser, 0);
+    return () => window.clearTimeout(timer);
+    }, []);
 
   useEffect(() => {
     if (ready && !user) router.replace("/signin");
