@@ -1,0 +1,432 @@
+
+.page {
+  min-height: 70vh;
+  padding: 32px 0 72px;
+}
+
+.container {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 32px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.backLink:hover {
+  color: var(--color-brand);
+}
+
+.heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--color-brand);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.heading h1 {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 44px);
+  letter-spacing: -0.045em;
+  line-height: 1.15;
+}
+
+.subtitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 12px 0 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 9px 13px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #16a34a;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: 1.65fr 1fr;
+  grid-template-rows: repeat(2, minmax(150px, 210px));
+  gap: 14px;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+}
+
+.photo {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(ellipse at 50% 25%, var(--color-brand-soft), transparent 55%),
+    var(--color-surface-muted);
+}
+
+.mainPhoto {
+  grid-row: 1 / 3;
+}
+
+.vehicleImage {
+  object-fit: cover;
+  transition: transform 300ms ease;
+}
+
+.photo:hover .vehicleImage {
+  transform: scale(1.025);
+}
+
+.photoPlaceholder {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 150px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 20px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.photoIcon {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface);
+  color: var(--color-brand);
+  font-size: 26px;
+}
+
+.photoPlaceholder span:not(.photoIcon) {
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.photoPlaceholder small {
+  font-size: 11px;
+}
+
+.photoLabel {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  align-items: start;
+  gap: 40px;
+  margin-top: 42px;
+}
+
+.information {
+  min-width: 0;
+}
+
+.sectionHeading {
+  margin-bottom: 18px;
+}
+
+.sectionHeading h2 {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 29px);
+  letter-spacing: -0.035em;
+}
+
+.description {
+  max-width: 680px;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.specifications {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.specification {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.specification > svg {
+  flex-shrink: 0;
+  color: var(--color-brand);
+}
+
+.specification div {
+  display: grid;
+  gap: 5px;
+}
+
+.specification span {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.specification strong {
+  font-size: 14px;
+}
+
+.locationCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  margin-top: 22px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.locationCard > svg {
+  flex-shrink: 0;
+  color: var(--color-brand);
+}
+
+.locationCard strong {
+  font-size: 14px;
+}
+
+.locationCard p {
+  margin: 6px 0 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.bookingCard {
+  position: sticky;
+  top: 24px;
+  padding: 26px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+}
+
+.price strong {
+  font-size: clamp(28px, 3vw, 36px);
+  letter-spacing: -0.04em;
+}
+
+.price span {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.bookingDivider {
+  height: 1px;
+  margin: 22px 0;
+  background: var(--color-border);
+}
+
+.bookingNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.bookingNote svg {
+  flex-shrink: 0;
+  color: var(--color-brand);
+}
+
+.bookingNote p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.bookingButton {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.demoNote {
+  margin: 15px 0 0;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.demoNote span {
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .bookingCard {
+    position: static;
+  }
+
+  .gallery {
+    grid-template-rows: repeat(2, minmax(130px, 180px));
+  }
+}
+
+@media (max-width: 560px) {
+  .container {
+    width: calc(100% - 32px);
+  }
+
+  .page {
+    padding-top: 24px;
+  }
+
+  .backLink {
+    margin-bottom: 24px;
+  }
+
+  .heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .gallery {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 230px 130px;
+    gap: 8px;
+    border-radius: var(--radius-lg);
+  }
+
+  .mainPhoto {
+    grid-column: 1 / 3;
+    grid-row: auto;
+  }
+
+  .photo {
+    border-radius: var(--radius-md);
+  }
+
+  .photoPlaceholder {
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .photoIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    font-size: 20px;
+  }
+
+  .photoPlaceholder small {
+    font-size: 10px;
+  }
+
+  .photoLabel {
+    bottom: 7px;
+    left: 7px;
+    padding: 5px 7px;
+    font-size: 10px;
+  }
+
+  .content {
+    margin-top: 30px;
+  }
+
+  .specifications {
+    gap: 9px;
+  }
+
+  .specification {
+    gap: 9px;
+    padding: 13px 10px;
+  }
+
+  .specification strong {
+    font-size: 12px;
+  }
+
+  .bookingCard {
+    padding: 21px;
+  }
+}
