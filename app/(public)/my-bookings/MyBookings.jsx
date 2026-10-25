@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -183,6 +183,14 @@ export default function MyBookings() {
                           : "Vehicle listing"}
                       </h2>
                       <p className={styles.bookingId}>Reference: {booking.id}</p>
+
+                      <Link
+                        href={`/bookings/${encodeURIComponent(booking.id)}`}
+                        className={styles.secondaryLink}
+                      >
+                        View booking details →
+                      </Link>
+
                     </div>
                     <span className={`${styles.status} ${styles[status] || ""}`}>
                       {statusLabels[status] || status}
