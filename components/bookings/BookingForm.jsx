@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,7 @@ export default function BookingForm({ car }) {
 
   const days = useMemo(() => {
     if (!startDate || !endDate || endDate <= startDate) return 0;
-    return Math.round(
+    return Math.ceil(
       (new Date(`${endDate}T00:00:00`) - new Date(`${startDate}T00:00:00`)) /
         86400000
     );
