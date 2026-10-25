@@ -1,13 +1,15 @@
-
+﻿
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getCars } from "../../../lib/demo-data";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import CatalogueCarCard from "../../../components/cars/CatalogueCarCard";
 import styles from "./CarsCatalogue.module.css";
 
 
-export default function CarsCatalogue({ cars }) {
+export default function CarsCatalogue({ cars: initialCars }) {
+  const [cars, setCars] = useState(initialCars);
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("All locations");
   const [transmission, setTransmission] = useState("All");
@@ -16,6 +18,19 @@ export default function CarsCatalogue({ cars }) {
   const [sort, setSort] = useState("recommended");
   const [showFilters, setShowFilters] = useState(false);
 
+  useEffect(() => {
+    const refreshCars = () => setCars(getCars());
+
+    refreshCars();
+
+    window.addEventListener("sheggar-storage-change", refreshCars);
+    window.addEventListener("storage", refreshCars);
+
+    return () => {
+      window.removeEventListener("sheggar-storage-change", refreshCars);
+      window.removeEventListener("storage", refreshCars);
+    };
+  }, []);
   const locations = useMemo(
     () => [...new Set(cars.map((car) => car.location))].sort(),
     [cars],
@@ -233,10 +248,11 @@ export default function CarsCatalogue({ cars }) {
         )}
 
         <p className={styles.demoNotice}>
-          Demo listings · Prices and availability are illustrative,
+          Demo listings Â· Prices and availability are illustrative,
           not confirmed rental offers.
         </p>
       </section>
     </div>
   );
 }
+
