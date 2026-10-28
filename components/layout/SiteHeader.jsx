@@ -1,17 +1,27 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CarFront, ChevronDown, UserRound, CalendarDays, LogOut } from "lucide-react";
+import {
+  CarFront,
+  ChevronDown,
+  UserRound,
+  CalendarDays,
+  LayoutDashboard,
+  ShieldAlert,
+  Car,
+  LogOut,
+} from "lucide-react";
+import { hasRole } from "../../lib/auth-utils";
+import { isSupabaseConfigured, getBrowserSupabaseClient } from "../../lib/supabase/client";
 import styles from "./SiteHeader.module.css";
 
 const navigation = [
   { label: "Home", href: "/" },
   { label: "Browse Cars", href: "/cars" },
   { label: "My Bookings", href: "/my-bookings" },
-  { label: "Sell Your Car", href: "/owner/cars" },
+  { label: "List Your Car", href: "/owner/cars" },
 ];
 
 export default function SiteHeader() {
@@ -66,7 +76,18 @@ export default function SiteHeader() {
     };
   }, []);
 
-  function handleSignOut() {
+  async function handleSignOut() {
+    if (isSupabaseConfigured()) {
+      const supabase = getBrowserSupabaseClient();
+      if (supabase) {
+        try {
+          await supabase.auth.signOut();
+        } catch {
+          // Ignore
+        }
+      }
+    }
+
     window.localStorage.removeItem("sw_current_user_v1");
     window.dispatchEvent(
       new CustomEvent("sheggar-storage-change", {
@@ -76,10 +97,13 @@ export default function SiteHeader() {
     setUser(null);
     setMenuOpen(false);
     router.push("/");
+    router.refresh();
   }
 
   const displayName = user?.name || user?.username || "Account";
   const initial = displayName.trim().charAt(0).toUpperCase() || "U";
+  const isAdmin = hasRole(user, "admin");
+  const isOwner = hasRole(user, "owner");
 
   return (
     <header className={styles["site-header"]}>
@@ -132,28 +156,41 @@ export default function SiteHeader() {
                     <span>{user.email || ""}</span>
                   </div>
 
-                  {user.role === "admin" && (
-
-                    <Link href="/admin" role="menuitem" className={styles["account-dropdown-link"]} onClick={() => setMenuOpen(false)}>
-
-                      Admin Dashboard
-
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      role="menuitem"
+                      className={styles["account-dropdown-link"]}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <ShieldAlert size={17} />
+                      Admin Console
                     </Link>
-
                   )}
 
-                  {user.role === "owner" && (
-
-                    <Link href="/owner/cars" role="menuitem" className={styles["account-dropdown-link"]} onClick={() => setMenuOpen(false)}>
-
-                      Owner Dashboard
-
+                  {isOwner && (
+                    <Link
+                      href="/owner"
+                      role="menuitem"
+                      className={styles["account-dropdown-link"]}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      <Car size={17} />
+                      Owner Hub
                     </Link>
-
                   )}
 
                   <Link
+                    href="/dashboard"
+                    role="menuitem"
+                    className={styles["account-dropdown-link"]}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <LayoutDashboard size={17} />
+                    Renter Dashboard
+                  </Link>
 
+                  <Link
                     href="/profile"
                     role="menuitem"
                     className={styles["account-dropdown-link"]}
@@ -205,4 +242,3 @@ export default function SiteHeader() {
     </header>
   );
 }
-
