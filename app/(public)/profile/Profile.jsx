@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,20 +13,19 @@ export default function Profile() {
 
   useEffect(() => {
     const loadUser = () => {
-        try {
-        setUser(
-            JSON.parse(
-            window.localStorage.getItem("sw_current_user_v1") || "null"
-            )
-        );
-        } catch {
+      try {
+        const stored = window.localStorage.getItem("sw_current_user_v1");
+        setUser(stored ? JSON.parse(stored) : null);
+      } catch {
         setUser(null);
-        }
+      } finally {
+        setReady(true);
+      }
     };
 
     const timer = window.setTimeout(loadUser, 0);
     return () => window.clearTimeout(timer);
-    }, []);
+  }, []);
 
   useEffect(() => {
     if (ready && !user) router.replace("/signin");
@@ -38,12 +36,14 @@ export default function Profile() {
   }
 
   const initials = user.name
-    .split(" ")
-    .filter(Boolean)
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+    ? user.name
+        .split(" ")
+        .filter(Boolean)
+        .map((part) => part[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "U";
 
   return (
     <main className={styles.page}>
@@ -74,7 +74,7 @@ export default function Profile() {
               <div>
                 <span>Account type</span>
                 <strong>
-                  {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                  {user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : "Renter"}
                 </strong>
               </div>
             </div>
