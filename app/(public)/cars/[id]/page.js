@@ -1,4 +1,4 @@
-﻿import CarDetailsClient from "./CarDetailsClient";
+import CarDetailsClient from "./CarDetailsClient";
 import { demoCars } from "../../../../data/cars";
 export const instant = false;
 
@@ -16,6 +16,40 @@ export async function generateMetadata({ params }) {
 
 export default async function CarDetailsPage({ params }) {
   const { id } = await params;
-  return <CarDetailsClient id={id} />;
-}
+  const car = demoCars.find((item) => item.id === id);
 
+  const jsonLd = car
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: `${car.year} ${car.make} ${car.model}`,
+        description: car.description,
+        image:
+          typeof car.photos === "object" && car.photos !== null
+            ? Object.values(car.photos)
+            : undefined,
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "ETB",
+          price: car.pricePerDay,
+          availability: "https://schema.org/InStock",
+        },
+        brand: {
+          "@type": "Brand",
+          name: car.make,
+        },
+      }
+    : null;
+
+  return (
+    <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      <CarDetailsClient id={id} />
+    </>
+  );
+}
