@@ -55,19 +55,22 @@ export default function BookingForm({ car }) {
     }
 
     if (!activeUser) {
-      setMessage("Please sign in as a renter before requesting a booking.");
-      return;
-    }
-
-    if (activeUser.role !== "renter") {
-      setMessage("Only renter accounts can request a booking. Please sign in as a renter.");
+      router.push(
+        `/signin?returnTo=${encodeURIComponent(
+          `/checkout?carId=${car.id}&startDate=${startDate}&endDate=${endDate}`
+        )}`
+      );
       return;
     }
 
     if (activeUser.id === car.ownerId) {
-      setMessage("You cannot book your own car.");
+      setMessage("You cannot book your own vehicle.");
       return;
     }
+
+    router.push(
+      `/checkout?carId=${car.id}&startDate=${startDate}&endDate=${endDate}`
+    );
 
     const bookings = getBookings();
 
@@ -171,7 +174,7 @@ export default function BookingForm({ car }) {
 
       <button className={styles.submit} type="submit" disabled={saving}>
         <CalendarDays size={18} aria-hidden="true" />
-        {saving ? "Saving request..." : "Request booking"}
+        {saving ? "Processing..." : "Proceed to Checkout"}
       </button>
 
       {message && (
