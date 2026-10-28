@@ -1,4 +1,5 @@
-﻿import AccountForm from "../../components/AccountForm";
+import { Suspense } from "react";
+import AccountForm from "../../components/AccountForm";
 
 export const metadata = {
   title: "Sign In | Sheggar Wheels",
@@ -6,5 +7,9 @@ export const metadata = {
 };
 
 export default function SignInPage() {
-  return <AccountForm mode="signin" />;
+  return (
+    <Suspense fallback={<div style={{ padding: 48, textAlign: "center" }}>Loading sign in…</div>}>
+      <AccountForm mode="signin" />
+    </Suspense>
+  );
 }
