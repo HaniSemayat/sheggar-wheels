@@ -1,26 +1,40 @@
-﻿
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { getCars } from "../../../lib/demo-data";
-import { Search, SlidersHorizontal, X } from "lucide-react";
 import CatalogueCarCard from "../../../components/cars/CatalogueCarCard";
 import styles from "./CarsCatalogue.module.css";
 
+const PAGE_SIZE = 6;
 
 export default function CarsCatalogue({ cars: initialCars }) {
-  const [cars, setCars] = useState(initialCars);
-  const [search, setSearch] = useState("");
-  const [location, setLocation] = useState("All locations");
-  const [transmission, setTransmission] = useState("All");
-  const [minSeats, setMinSeats] = useState("Any");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [sort, setSort] = useState("recommended");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Read initial filter values from URL or defaults
+  const paramSearch = searchParams.get("q") || "";
+  const paramLocation = searchParams.get("location") || "All locations";
+  const paramTransmission = searchParams.get("transmission") || "All";
+  const paramSeats = searchParams.get("seats") || "Any";
+  const paramMaxPrice = searchParams.get("maxPrice") || "";
+  const paramSort = searchParams.get("sort") || "recommended";
+  const paramPage = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+
+  const [cars, setCars] = useState(initialCars || []);
+  const [search, setSearch] = useState(paramSearch);
+  const [location, setLocation] = useState(paramLocation);
+  const [transmission, setTransmission] = useState(paramTransmission);
+  const [minSeats, setMinSeats] = useState(paramSeats);
+  const [maxPrice, setMaxPrice] = useState(paramMaxPrice);
+  const [sort, setSort] = useState(paramSort);
+  const [currentPage, setCurrentPage] = useState(paramPage);
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     const refreshCars = () => setCars(getCars());
-
     refreshCars();
 
     window.addEventListener("sheggar-storage-change", refreshCars);
@@ -31,26 +45,54 @@ export default function CarsCatalogue({ cars: initialCars }) {
       window.removeEventListener("storage", refreshCars);
     };
   }, []);
+
+  // Update URL search parameters when filters change
+  function updateParams(newFilters, newPage = 1) {
+    const params = new URLSearchParams();
+    const q = newFilters.search ?? search;
+    const loc = newFilters.location ?? location;
+    const trans = newFilters.transmission ?? transmission;
+    const seats = newFilters.minSeats ?? minSeats;
+    const price = newFilters.maxPrice ?? maxPrice;
+    const s = newFilters.sort ?? sort;
+
+    if (q) params.set("q", q);
+    if (loc && loc !== "All locations") params.set("location", loc);
+    if (trans && trans !== "All") params.set("transmission", trans);
+    if (seats && seats !== "Any") params.set("seats", seats);
+    if (price) params.set("maxPrice", price);
+    if (s && s !== "recommended") params.set("sort", s);
+    if (newPage > 1) params.set("page", String(newPage));
+
+    const queryString = params.toString();
+    router.replace(`${pathname}${queryString ? `?${queryString}` : ""}`, { scroll: false });
+  }
+
+  // Approved cars only for public catalogue
+  const approvedCars = useMemo(() => {
+    return cars.filter((car) => {
+      const moderation = car.moderationStatus || car.status || "approved";
+      return moderation === "approved" || moderation === "available";
+    });
+  }, [cars]);
+
   const locations = useMemo(
-    () => [...new Set(cars.map((car) => car.location))].sort(),
-    [cars],
+    () => [...new Set(approvedCars.map((car) => car.location).filter(Boolean))].sort(),
+    [approvedCars]
   );
 
   const filteredCars = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    const result = cars.filter((car) => {
-      const searchableText =
-        `${car.make} ${car.model} ${car.year} ${car.description} ${car.location}`.toLowerCase();
+    const result = approvedCars.filter((car) => {
+      const searchableText = `${car.make} ${car.model} ${car.year} ${car.description || ""} ${car.location || ""}`.toLowerCase();
 
       return (
         searchableText.includes(query) &&
         (location === "All locations" || car.location === location) &&
-        (transmission === "All" ||
-          car.transmission === transmission) &&
+        (transmission === "All" || car.transmission === transmission) &&
         (minSeats === "Any" || car.seats >= Number(minSeats)) &&
-        (maxPrice === "" ||
-          car.pricePerDay <= Number(maxPrice))
+        (maxPrice === "" || car.pricePerDay <= Number(maxPrice))
       );
     });
 
@@ -63,15 +105,32 @@ export default function CarsCatalogue({ cars: initialCars }) {
     }
 
     return result;
-  }, [
-    cars,
-    search,
-    location,
-    transmission,
-    minSeats,
-    maxPrice,
-    sort,
-  ]);
+  }, [approvedCars, search, location, transmission, minSeats, maxPrice, sort]);
+
+  // Pagination calculation
+  const totalCount = filteredCars.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+  const startIndex = (safeCurrentPage - 1) * PAGE_SIZE;
+  const paginatedCars = filteredCars.slice(startIndex, startIndex + PAGE_SIZE);
+
+  function handleFilterChange(updates) {
+    if ("search" in updates) setSearch(updates.search);
+    if ("location" in updates) setLocation(updates.location);
+    if ("transmission" in updates) setTransmission(updates.transmission);
+    if ("minSeats" in updates) setMinSeats(updates.minSeats);
+    if ("maxPrice" in updates) setMaxPrice(updates.maxPrice);
+    if ("sort" in updates) setSort(updates.sort);
+    setCurrentPage(1);
+    updateParams(updates, 1);
+  }
+
+  function handlePageChange(newPage) {
+    if (newPage < 1 || newPage > totalPages) return;
+    setCurrentPage(newPage);
+    updateParams({}, newPage);
+    window.scrollTo({ top: 320, behavior: "smooth" });
+  }
 
   function resetFilters() {
     setSearch("");
@@ -80,6 +139,8 @@ export default function CarsCatalogue({ cars: initialCars }) {
     setMinSeats("Any");
     setMaxPrice("");
     setSort("recommended");
+    setCurrentPage(1);
+    router.replace(pathname, { scroll: false });
   }
 
   const hasFilters =
@@ -102,20 +163,20 @@ export default function CarsCatalogue({ cars: initialCars }) {
 
           <label className={styles.searchBox}>
             <Search size={20} aria-hidden="true" />
-            <span className={styles.visuallyHidden}>
-              Search cars
-            </span>
+            <span className={styles.visuallyHidden}>Search cars</span>
             <input
               type="search"
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(event) =>
+                handleFilterChange({ search: event.target.value })
+              }
               placeholder="Search make, model, year or location..."
             />
             {search && (
               <button
                 type="button"
                 className={styles.clearSearch}
-                onClick={() => setSearch("")}
+                onClick={() => handleFilterChange({ search: "" })}
                 aria-label="Clear search"
               >
                 <X size={18} />
@@ -130,7 +191,9 @@ export default function CarsCatalogue({ cars: initialCars }) {
           <div>
             <h2>Available cars</h2>
             <p className={styles.resultCount}>
-              {filteredCars.length} of {cars.length} demo listings
+              Showing {totalCount > 0 ? startIndex + 1 : 0}–
+              {Math.min(startIndex + PAGE_SIZE, totalCount)} of {totalCount}{" "}
+              verified listings
             </p>
           </div>
 
@@ -149,7 +212,9 @@ export default function CarsCatalogue({ cars: initialCars }) {
               <span>Sort by</span>
               <select
                 value={sort}
-                onChange={(event) => setSort(event.target.value)}
+                onChange={(event) =>
+                  handleFilterChange({ sort: event.target.value })
+                }
               >
                 <option value="recommended">Recommended</option>
                 <option value="price-low">Price: low to high</option>
@@ -166,7 +231,9 @@ export default function CarsCatalogue({ cars: initialCars }) {
               <span>Location</span>
               <select
                 value={location}
-                onChange={(event) => setLocation(event.target.value)}
+                onChange={(event) =>
+                  handleFilterChange({ location: event.target.value })
+                }
               >
                 <option>All locations</option>
                 {locations.map((item) => (
@@ -180,7 +247,7 @@ export default function CarsCatalogue({ cars: initialCars }) {
               <select
                 value={transmission}
                 onChange={(event) =>
-                  setTransmission(event.target.value)
+                  handleFilterChange({ transmission: event.target.value })
                 }
               >
                 <option>All</option>
@@ -193,7 +260,9 @@ export default function CarsCatalogue({ cars: initialCars }) {
               <span>Minimum seats</span>
               <select
                 value={minSeats}
-                onChange={(event) => setMinSeats(event.target.value)}
+                onChange={(event) =>
+                  handleFilterChange({ minSeats: event.target.value })
+                }
               >
                 <option value="Any">Any</option>
                 <option value="5">5+ seats</option>
@@ -208,7 +277,9 @@ export default function CarsCatalogue({ cars: initialCars }) {
                 type="number"
                 min="0"
                 value={maxPrice}
-                onChange={(event) => setMaxPrice(event.target.value)}
+                onChange={(event) =>
+                  handleFilterChange({ maxPrice: event.target.value })
+                }
                 placeholder="e.g. 5000"
               />
             </label>
@@ -226,12 +297,53 @@ export default function CarsCatalogue({ cars: initialCars }) {
           </div>
         )}
 
-        {filteredCars.length > 0 ? (
-          <div className={styles.grid}>
-            {filteredCars.map((car) => (
-              <CatalogueCarCard key={car.id} car={car} />
-            ))}
-          </div>
+        {paginatedCars.length > 0 ? (
+          <>
+            <div className={styles.grid}>
+              {paginatedCars.map((car) => (
+                <CatalogueCarCard key={car.id} car={car} />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <nav className={styles.pagination} aria-label="Catalogue pagination">
+                <button
+                  type="button"
+                  className={styles.pageButton}
+                  onClick={() => handlePageChange(safeCurrentPage - 1)}
+                  disabled={safeCurrentPage <= 1}
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    className={`${styles.pageButton} ${p === safeCurrentPage ? styles.activePage : ""}`}
+                    onClick={() => handlePageChange(p)}
+                    aria-current={p === safeCurrentPage ? "page" : undefined}
+                  >
+                    {p}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  className={styles.pageButton}
+                  onClick={() => handlePageChange(safeCurrentPage + 1)}
+                  disabled={safeCurrentPage >= totalPages}
+                  aria-label="Next page"
+                >
+                  <ChevronRight size={18} />
+                </button>
+                <span className={styles.pageInfo}>
+                  Page {safeCurrentPage} of {totalPages}
+                </span>
+              </nav>
+            )}
+          </>
         ) : (
           <div className={styles.emptyState}>
             <Search size={30} aria-hidden="true" />
@@ -248,11 +360,10 @@ export default function CarsCatalogue({ cars: initialCars }) {
         )}
 
         <p className={styles.demoNotice}>
-          Demo listings Â· Prices and availability are illustrative,
+          Demo listings · Prices and availability are illustrative,
           not confirmed rental offers.
         </p>
       </section>
     </div>
   );
 }
-
