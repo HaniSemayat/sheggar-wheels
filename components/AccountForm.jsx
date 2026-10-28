@@ -1,15 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CarFront, Eye, EyeOff } from "lucide-react";
 import { getUsers } from "../lib/demo-data";
 import { STORAGE_KEYS, writeStorage } from "../lib/storage";
+import { safeReturnPath } from "../lib/auth-utils";
+import { isSupabaseConfigured, getBrowserSupabaseClient } from "../lib/supabase/client";
 import styles from "./AccountForm.module.css";
 
 export default function AccountForm({ mode }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo") || searchParams.get("next");
+  const safeNext = safeReturnPath(returnTo, null);
+
   const isSignup = mode === "signup";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,14 +25,121 @@ export default function AccountForm({ mode }) {
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [, startTransition] = useTransition();
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     setMessage("");
     setSaving(true);
 
-    const users = getUsers();
     const normalizedEmail = email.trim().toLowerCase();
+
+    // 1. Supabase Auth when configured
+    if (isSupabaseConfigured()) {
+      const supabase = getBrowserSupabaseClient();
+      if (supabase) {
+        try {
+          if (isSignup) {
+            const { data, error } = await supabase.auth.signUp({
+              email: normalizedEmail,
+              password,
+              options: {
+                data: {
+                  name: name.trim(),
+                  phone: phone.trim(),
+                  role: role === "owner" ? "owner" : "renter",
+                },
+              },
+            });
+
+            if (error) {
+              setMessage(error.message);
+              setSaving(false);
+              return;
+            }
+
+            const userObj = {
+              id: data.user?.id || `user-${Date.now()}`,
+              name: name.trim(),
+              email: normalizedEmail,
+              role,
+              roles: role === "owner" ? ["renter", "owner"] : ["renter"],
+            };
+
+            writeStorage("sw_current_user_v1", userObj);
+            const destination = safeNext || (role === "owner" ? "/owner/cars" : "/cars");
+            startTransition(() => {
+              router.push(destination);
+              router.refresh();
+            });
+            return;
+          } else {
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email: normalizedEmail,
+              password,
+            });
+
+            if (error) {
+              setMessage(error.message);
+              setSaving(false);
+              return;
+            }
+
+            // Fetch profile
+            let profileRole = "renter";
+            let profileRoles = ["renter"];
+            let profileName = data.user.user_metadata?.name || normalizedEmail.split("@")[0];
+
+            try {
+              const { data: profile } = await supabase
+                .from("profiles")
+                .select("*")
+                .eq("id", data.user.id)
+                .single();
+
+              if (profile) {
+                profileRoles = profile.roles || ["renter"];
+                profileRole = profileRoles.includes("admin")
+                  ? "admin"
+                  : profileRoles.includes("owner")
+                  ? "owner"
+                  : "renter";
+                profileName = profile.name || profileName;
+              }
+            } catch {
+              // Ignore profile query error
+            }
+
+            const sessionUser = {
+              id: data.user.id,
+              name: profileName,
+              email: normalizedEmail,
+              role: profileRole,
+              roles: profileRoles,
+            };
+
+            writeStorage("sw_current_user_v1", sessionUser);
+            const destination = safeNext || (
+              profileRole === "admin"
+                ? "/admin"
+                : profileRole === "owner"
+                ? "/owner"
+                : "/cars"
+            );
+            startTransition(() => {
+              router.push(destination);
+              router.refresh();
+            });
+            return;
+          }
+        } catch (err) {
+          console.warn("Supabase auth attempted, falling back to local store:", err);
+        }
+      }
+    }
+
+    // 2. Local Demonstration Mode Fallback
+    const users = getUsers();
 
     if (isSignup) {
       if (users.some((user) => user.email.toLowerCase() === normalizedEmail)) {
@@ -39,50 +152,61 @@ export default function AccountForm({ mode }) {
         id: `user-${Date.now()}`,
         name: name.trim(),
         email: normalizedEmail,
-        password,
         phone: phone.trim(),
         role,
+        roles: role === "owner" ? ["renter", "owner"] : ["renter"],
       };
 
-      if (!writeStorage(STORAGE_KEYS.users, [...users, user])) {
-        setMessage("Could not create your account. Please try again.");
-        setSaving(false);
-        return;
-      }
-
+      writeStorage(STORAGE_KEYS.users, [...users, user]);
       writeStorage("sw_current_user_v1", {
         id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
+        roles: user.roles,
       });
 
-      router.push(role === "owner" ? "/owner/cars" : "/cars");
-      router.refresh();
+      const destination = safeNext || (role === "owner" ? "/owner/cars" : "/cars");
+      startTransition(() => {
+        router.push(destination);
+        router.refresh();
+      });
       return;
     }
 
+    // Signin in local demo mode
     const user = users.find(
-      (item) =>
-        item.email.toLowerCase() === normalizedEmail &&
-        item.password === password
+      (item) => item.email.toLowerCase() === normalizedEmail
     );
 
     if (!user) {
-      setMessage("Email or password is incorrect.");
+      setMessage("Email not recognized. Use one of the demo accounts below or create an account.");
       setSaving(false);
       return;
     }
 
-    writeStorage("sw_current_user_v1", {
+    const sessionUser = {
       id: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
-    });
+      roles: Array.isArray(user.roles) ? user.roles : [user.role],
+    };
 
-    router.push(user.role === "admin" ? "/admin" : user.role === "owner" ? "/owner/cars" : "/cars");
-    router.refresh();
+    writeStorage("sw_current_user_v1", sessionUser);
+
+    const destination = safeNext || (
+      user.role === "admin"
+        ? "/admin"
+        : user.role === "owner"
+        ? "/owner"
+        : "/cars"
+    );
+
+    startTransition(() => {
+      router.push(destination);
+      router.refresh();
+    });
   }
 
   return (
@@ -108,13 +232,23 @@ export default function AccountForm({ mode }) {
             <>
               <label>
                 Full name
-                <input value={name} onChange={(e) => setName(e.target.value)}
-                  autoComplete="name" required minLength={2} />
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  autoComplete="name"
+                  required
+                  minLength={2}
+                />
               </label>
               <label>
                 Phone number
-                <input value={phone} onChange={(e) => setPhone(e.target.value)}
-                  type="tel" autoComplete="tel" required />
+                <input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  type="tel"
+                  autoComplete="tel"
+                  required
+                />
               </label>
               <label>
                 I want to
@@ -128,20 +262,31 @@ export default function AccountForm({ mode }) {
 
           <label>
             Email address
-            <input type="email" value={email}
+            <input
+              type="email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email" required />
+              autoComplete="email"
+              required
+            />
           </label>
 
           <label>
             Password
             <span className={styles.passwordField}>
-              <input type={showPassword ? "text" : "password"}
-                value={password} onChange={(e) => setPassword(e.target.value)}
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 autoComplete={isSignup ? "new-password" : "current-password"}
-                minLength={6} required />
-              <button type="button" onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}>
+                minLength={6}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </span>
@@ -158,17 +303,21 @@ export default function AccountForm({ mode }) {
 
         {!isSignup && (
           <div className={styles.demo}>
-            <strong>Demo accounts (password: demo123)</strong>
+            <strong>Demo accounts (instant sign in)</strong>
             {[
               ["Renter", "renter@sheggar.demo"],
               ["Owner", "owner@sheggar.demo"],
               ["Admin", "admin@sheggar.demo"],
             ].map(([label, demoEmail]) => (
-              <button key={demoEmail} type="button" onClick={() => {
-                setEmail(demoEmail);
-                setPassword("demo123");
-                setMessage("");
-              }}>
+              <button
+                key={demoEmail}
+                type="button"
+                onClick={() => {
+                  setEmail(demoEmail);
+                  setPassword("demo123");
+                  setMessage("");
+                }}
+              >
                 Use {label} demo
               </button>
             ))}
@@ -182,12 +331,10 @@ export default function AccountForm({ mode }) {
           </Link>
         </p>
         <p className={styles.disclaimer}>
-          Demo application: account information is stored in this browser.
-          Do not use a real password.
+          Demo application: in local mode, demo sessions are stored locally.
+          Do not use sensitive personal passwords.
         </p>
       </section>
     </main>
   );
 }
-
-
