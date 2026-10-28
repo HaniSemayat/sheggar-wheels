@@ -16,6 +16,31 @@ import CarPhotoGallery from "../../../../components/cars/CarPhotoGallery";
 import BookingForm from "../../../../components/bookings/BookingForm";
 import ReviewSection from "./ReviewSection";
 import styles from "./CarDetails.module.css";
+import dynamic from "next/dynamic";
+
+const CarLocationMap = dynamic(
+  () => import("../../../../components/cars/CarLocationMap"),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        style={{
+          height: "260px",
+          background: "var(--color-surface, #f9fafb)",
+          borderRadius: "12px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--color-text-muted, #6b7280)",
+          border: "1px solid var(--color-border, #e5e7eb)",
+          marginTop: "16px",
+        }}
+      >
+        Loading location map…
+      </div>
+    ),
+  }
+);
 
 export default function CarDetailsClient({ id }) {
   const [car, setCar] = useState(() => demoCars.find((item) => item.id === id) || null);
@@ -111,6 +136,12 @@ export default function CarDetailsClient({ id }) {
                 <p>{car.location}, Addis Ababa, Ethiopia</p>
               </div>
             </div>
+            <CarLocationMap
+              location={car.location}
+              title={`${car.year} ${car.make} ${car.model}`}
+              latitude={car.latitude}
+              longitude={car.longitude}
+            />
           </section>
 
           <aside className={styles.bookingCard}>
