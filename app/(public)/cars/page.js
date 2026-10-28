@@ -1,4 +1,4 @@
-
+import { Suspense } from "react";
 import { demoCars } from "../../../data/cars";
 import CarsCatalogue from "./CarsCatalogue";
 
@@ -9,5 +9,9 @@ export const metadata = {
 };
 
 export default function CarsPage() {
-  return <CarsCatalogue cars={demoCars} />;
+  return (
+    <Suspense fallback={<div style={{ padding: "64px 24px", textAlign: "center" }}>Loading car catalogue…</div>}>
+      <CarsCatalogue cars={demoCars} />
+    </Suspense>
+  );
 }
