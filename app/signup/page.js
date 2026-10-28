@@ -1,10 +1,15 @@
-﻿import AccountForm from "../../components/AccountForm";
+import { Suspense } from "react";
+import AccountForm from "../../components/AccountForm";
 
 export const metadata = {
-  title: "Create Account | Sheggar Wheels",
-  description: "Join Sheggar Wheels to rent or list a car.",
+  title: "Sign Up | Sheggar Wheels",
+  description: "Create an account on Sheggar Wheels.",
 };
 
 export default function SignUpPage() {
-  return <AccountForm mode="signup" />;
+  return (
+    <Suspense fallback={<div style={{ padding: 48, textAlign: "center" }}>Loading registration…</div>}>
+      <AccountForm mode="signup" />
+    </Suspense>
+  );
 }
