@@ -1,0 +1,92 @@
+﻿.page {
+  min-height: 75vh;
+  display: grid;
+  place-items: center;
+  padding: 48px 20px;
+  background: var(--color-background, #f7f7f4);
+}
+.card {
+  width: min(100%, 470px);
+  padding: 36px;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e5e5e5);
+  border-radius: 20px;
+  box-shadow: 0 16px 45px rgb(0 0 0 / 5%);
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+  color: var(--color-text, #171717);
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.brand b { color: var(--color-brand, #6b4eff); }
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--color-brand, #6b4eff);
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+.card h1 { margin: 0; font-size: clamp(1.7rem, 5vw, 2.1rem); }
+.subtitle { color: var(--color-text-muted, #737373); line-height: 1.6; }
+.form { display: grid; gap: 17px; margin-top: 26px; }
+.form label { display: grid; gap: 8px; font-size: .9rem; font-weight: 650; }
+.form input, .form select {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border, #dedede);
+  border-radius: 9px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #171717);
+}
+.passwordField { display: flex; align-items: center; position: relative; }
+.passwordField input { padding-right: 45px; }
+.passwordField button {
+  position: absolute;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+}
+.submit {
+  min-height: 48px;
+  margin-top: 5px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--color-brand, #6b4eff);
+  color: white;
+  font-weight: 750;
+}
+.submit:hover { filter: brightness(.95); }
+.message { margin: 0; color: var(--color-danger, #dc2626); font-size: .9rem; }
+.demo {
+  display: grid;
+  gap: 5px;
+  margin-top: 24px;
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--color-background, #f7f7f4);
+  font-size: .88rem;
+}
+.demo button {
+  justify-self: start;
+  margin-top: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-brand, #6b4eff);
+  font-weight: 700;
+}
+.switch { margin: 24px 0 0; text-align: center; font-size: .9rem; }
+.switch a { color: var(--color-brand, #6b4eff); font-weight: 750; }
+.disclaimer { margin: 18px 0 0; color: var(--color-text-muted, #737373); font-size: .75rem; line-height: 1.5; text-align: center; }
+@media (max-width: 520px) {
+  .card { padding: 25px 20px; }
+}

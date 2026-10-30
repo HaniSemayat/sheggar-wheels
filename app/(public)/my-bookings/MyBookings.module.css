@@ -1,0 +1,281 @@
+﻿.page {
+  min-height: 65vh;
+  padding: 42px 0 80px;
+  background: var(--color-background, #f8f8f6);
+}
+
+.container {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 24px;
+  color: #5d50d8;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #6758d8;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.header h1,
+.empty h1 {
+  margin: 0 0 10px;
+  color: #191925;
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  letter-spacing: -0.04em;
+}
+
+.header p:not(.eyebrow),
+.empty p {
+  margin: 0;
+  color: #686879;
+  line-height: 1.65;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border: 1px solid #e8e6f5;
+  border-radius: 16px;
+  background: white;
+  color: #6758d8;
+}
+
+.summary strong,
+.summary span {
+  display: block;
+}
+
+.summary strong {
+  color: #191925;
+  font-size: 1.4rem;
+}
+
+.summary span {
+  color: #686879;
+  font-size: 0.82rem;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.stats > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid #e9e8ef;
+  border-radius: 14px;
+  background: white;
+}
+
+.stats span {
+  color: #686879;
+  font-size: 0.9rem;
+}
+
+.stats strong {
+  color: #191925;
+  font-size: 1.35rem;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.filter,
+.activeFilter {
+  border: 1px solid #e3e1ec;
+  border-radius: 999px;
+  padding: 10px 15px;
+  background: white;
+  color: #525263;
+  font: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.activeFilter {
+  border-color: #6758d8;
+  background: #6758d8;
+  color: white;
+}
+
+.list {
+  display: grid;
+  gap: 16px;
+}
+
+.card {
+  padding: 24px;
+  border: 1px solid #e9e8ef;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 5px 20px rgb(24 24 40 / 4%);
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #efedf4;
+}
+
+.cardTop h2 {
+  margin: 0 0 6px;
+  color: #191925;
+  font-size: 1.2rem;
+}
+
+.bookingId {
+  margin: 0;
+  color: #858494;
+  font-size: 0.8rem;
+}
+
+.status {
+  display: inline-block;
+  flex-shrink: 0;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #f0eff4;
+  color: #59576a;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.pending { background: #fff4d8; color: #8a5b00; }
+.confirmed { background: #e3f8eb; color: #176b3a; }
+.completed { background: #e7eaff; color: #3e4caa; }
+.cancelled, .rejected { background: #ffebeb; color: #a32e36; }
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  padding: 22px 0;
+}
+
+.details span,
+.details strong {
+  display: block;
+}
+
+.details span {
+  margin-bottom: 7px;
+  color: #858494;
+  font-size: 0.82rem;
+}
+
+.details strong {
+  color: #282738;
+  font-size: 0.93rem;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #efedf4;
+  color: #686879;
+  font-size: 0.88rem;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 54px 24px;
+  border: 1px dashed #d9d6e8;
+  border-radius: 18px;
+  background: white;
+  text-align: center;
+  color: #6758d8;
+}
+
+.empty h2 {
+  margin: 0;
+  color: #191925;
+}
+
+.primaryLink,
+.secondaryLink {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.primaryLink {
+  margin-top: 8px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: #6758d8;
+  color: white;
+}
+
+.secondaryLink {
+  color: #6758d8;
+}
+
+@media (max-width: 700px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stats > div {
+    padding: 14px 16px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .cardTop {
+    flex-direction: column;
+  }
+
+  .details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cardFooter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
