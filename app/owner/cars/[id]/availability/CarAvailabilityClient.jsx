@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Plus, Trash2, CheckCircle2 } from "lucide-react";
 import { getCars } from "../../../../../lib/demo-data";
@@ -15,6 +15,7 @@ export default function CarAvailabilityClient({ id }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    startTransition(() => {
     const allCars = getCars();
     const found = allCars.find((c) => c.id === id);
     if (found) {
@@ -22,6 +23,7 @@ export default function CarAvailabilityClient({ id }) {
       setUnavailableDates(found.unavailableDates || []);
     }
     setReady(true);
+    });
   }, [id]);
 
   function handleAddDate(e) {
