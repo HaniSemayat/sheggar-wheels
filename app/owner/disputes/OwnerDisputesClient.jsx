@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { startTransition, useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowLeft, AlertTriangle, CheckCircle2, ShieldAlert } from "lucide-react";
 import { getCars, getBookings } from "../../../lib/demo-data";
@@ -17,6 +17,7 @@ export default function OwnerDisputesClient() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    startTransition(() => {
     try {
       const activeUser = JSON.parse(
         window.localStorage.getItem("sw_current_user_v1") || "null"
@@ -44,6 +45,7 @@ export default function OwnerDisputesClient() {
     ]);
     setDisputes(storedDisputes);
     setReady(true);
+    });
   }, []);
 
   const myCars = useMemo(() => cars.filter((c) => c.ownerId === ownerId), [cars, ownerId]);
