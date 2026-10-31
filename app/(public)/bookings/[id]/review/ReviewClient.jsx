@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Star, CheckCircle2, AlertCircle } from "lucide-react";
@@ -23,24 +23,27 @@ export default function ReviewClient({ id }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    try {
-      const activeUser = JSON.parse(
-        window.localStorage.getItem("sw_current_user_v1") || "null"
-      );
-      setCurrentUser(activeUser);
+    startTransition(() => {
+      try {
+        const activeUser = JSON.parse(
+          window.localStorage.getItem("sw_current_user_v1") || "null"
+        );
+        setCurrentUser(activeUser);
 
-      const allBookings = getBookings();
-      const b = allBookings.find((item) => item.id === id);
-      setBooking(b || null);
+        const allBookings = getBookings();
+        const b = allBookings.find((item) => item.id === id);
+        setBooking(b || null);
 
-      if (b) {
-        const c = getCars().find((item) => item.id === b.carId);
-        setCar(c || null);
+        if (b) {
+          const c = getCars().find((item) => item.id === b.carId);
+          setCar(c || null);
+        }
+      } catch {
+        //
       }
-    } catch {
-      //
-    }
-    setReady(true);
+
+      setReady(true);
+    });
   }, [id]);
 
   async function handleSubmitReview(e) {
