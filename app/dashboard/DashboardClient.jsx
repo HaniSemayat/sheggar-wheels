@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { startTransition, useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import {
   CarFront,
@@ -24,6 +24,7 @@ export default function DashboardClient() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    startTransition(() => {
     try {
       const activeUser = JSON.parse(
         window.localStorage.getItem("sw_current_user_v1") || "null"
@@ -35,6 +36,7 @@ export default function DashboardClient() {
       //
     }
     setReady(true);
+    });
   }, []);
 
   const isRenter = hasRole(currentUser, "renter");
@@ -142,7 +144,7 @@ export default function DashboardClient() {
           {myBookings.length === 0 ? (
             <div style={{ padding: "36px 16px", textAlign: "center", color: "var(--color-text-muted)" }}>
               <CarFront size={40} style={{ margin: "0 auto 12px", opacity: 0.5 }} />
-              <p style={{ margin: "0 0 16px" }}>You haven't requested any rentals yet.</p>
+              <p style={{ margin: "0 0 16px" }}>You haven&apos;t requested any rentals yet.</p>
               <Link href="/cars" style={{ background: "var(--color-brand)", color: "white", padding: "10px 18px", borderRadius: "8px", textDecoration: "none", fontWeight: 600 }}>
                 Browse Available Cars
               </Link>
