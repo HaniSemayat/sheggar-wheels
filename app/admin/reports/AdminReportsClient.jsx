@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { startTransition, useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowLeft, Download, DollarSign, TrendingUp, BarChart3 } from "lucide-react";
 import { getBookings, getCars } from "../../../lib/demo-data";
@@ -13,9 +13,11 @@ export default function AdminReportsClient() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setBookings(getBookings());
-    setCars(getCars());
-    setReady(true);
+    startTransition(() => {
+      setBookings(getBookings());
+      setCars(getCars());
+      setReady(true);
+    });
   }, []);
 
   const totalGMV = useMemo(() => {
