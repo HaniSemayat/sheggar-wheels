@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { startTransition, useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowLeft, Star, MessageSquare, CornerDownRight, CheckCircle2 } from "lucide-react";
 import { getCars, getReviews } from "../../../lib/demo-data";
@@ -19,6 +19,7 @@ export default function OwnerReviewsClient() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    startTransition(() => {
     try {
       const activeUser = JSON.parse(
         window.localStorage.getItem("sw_current_user_v1") || "null"
@@ -34,6 +35,7 @@ export default function OwnerReviewsClient() {
     setCars(getCars());
     setReviews(getReviews());
     setReady(true);
+    });
   }, []);
 
   const myCars = useMemo(() => cars.filter((c) => c.ownerId === ownerId), [cars, ownerId]);
@@ -144,7 +146,7 @@ export default function OwnerReviewsClient() {
                 </div>
 
                 <p style={{ fontSize: "15px", lineHeight: "1.6", margin: "0 0 16px" }}>
-                  "{rev.comment}"
+                  &quot;{rev.comment}&quot;
                 </p>
 
                 {/* Existing Reply */}
