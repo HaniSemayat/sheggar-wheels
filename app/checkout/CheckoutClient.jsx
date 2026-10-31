@@ -2,6 +2,7 @@
 
 import { startTransition, useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -330,13 +331,16 @@ export default function CheckoutClient() {
               </h2>
 
               <div className={styles.carSummary}>
-                <img
+                <Image
                   src={
                     typeof selectedCar.photos === "object" && selectedCar.photos !== null
                       ? selectedCar.photos.front || Object.values(selectedCar.photos)[0] || "/images/cars/toyota-corolla-2022/front.jpg"
                       : "/images/cars/toyota-corolla-2022/front.jpg"
                   }
                   alt={`${selectedCar.make} ${selectedCar.model}`}
+                  width={90}
+                  height={65}
+                  unoptimized
                 />
                 <div className={styles.carInfo}>
                   <h3>{selectedCar.year} {selectedCar.make} {selectedCar.model}</h3>
