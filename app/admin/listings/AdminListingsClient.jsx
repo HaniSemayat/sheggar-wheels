@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { startTransition, useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, XCircle, Filter, Car } from "lucide-react";
 import { getCars } from "../../../lib/demo-data";
@@ -14,8 +14,10 @@ export default function AdminListingsClient() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setCars(getCars());
-    setReady(true);
+    startTransition(() => {
+      setCars(getCars());
+      setReady(true);
+    });
   }, []);
 
   const filteredCars = useMemo(() => {
