@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { startTransition, useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
@@ -37,22 +37,24 @@ export default function CheckoutClient() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const allCars = getCars();
-    setCars(allCars);
-
-    try {
-      const activeUser = JSON.parse(
-        window.localStorage.getItem("sw_current_user_v1") || "null"
-      );
-      setCurrentUser(activeUser);
-      if (activeUser?.phone) {
-        setTelebirrPhone(activeUser.phone);
+    startTransition(() => {
+      const allCars = getCars();
+      setCars(allCars);
+  
+      try {
+        const activeUser = JSON.parse(
+          window.localStorage.getItem("sw_current_user_v1") || "null"
+        );
+        setCurrentUser(activeUser);
+        if (activeUser?.phone) {
+          setTelebirrPhone(activeUser.phone);
+        }
+      } catch {
+        setCurrentUser(null);
       }
-    } catch {
-      setCurrentUser(null);
-    }
-
-    setReady(true);
+  
+      setReady(true);
+    });
   }, []);
 
   const selectedCar = useMemo(() => {
