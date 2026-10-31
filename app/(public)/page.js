@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./page.module.css";
+import { demoCars } from "../../data/cars";
 import FeaturedCarCard from "../../components/cars/FeaturedCarCard";
 import CustomerReviews from "../../components/home/CustomerReviews";
 
@@ -19,40 +20,23 @@ const heroSlides = [
 ];
 
 const featuredCars = [
-  {
-    id: "city-sedan",
-    make: "Toyota",
-    name: "Corolla",
-    price: 2500,
-    seats: 5,
-    fuel: "Petrol",
-    badge: "NEW",
-    image: "/images/cars/toyota-corolla.jpg",
-    imageAlt: "Toyota Corolla sedan",
-  },
-  {
-    id: "family-suv",
-    make: "Hyundai",
-    name: "Tucson",
-    price: 4500,
-    seats: 5,
-    fuel: "Petrol",
-    badge: "POPULAR",
-    image: "/images/cars/hyundai-tucson.jpg",
-    imageAlt: "Hyundai Tucson SUV",
-  },
-  {
-    id: "premium-sedan",
-    make: "Mercedes-Benz",
-    name: "C-Class",
-    price: 7000,
-    seats: 5,
-    fuel: "Petrol",
-    badge: "PREMIUM",
-    image: "/images/cars/mercedes-c-class.jpg",
-    imageAlt: "Mercedes-Benz C-Class sedan",
-  },
-];
+  { id: "toyota-corolla-2022", badge: "NEW" },
+  { id: "hyundai-tucson-2023", badge: "POPULAR" },
+  { id: "mercedes-c-class-2023", badge: "PREMIUM" },
+].map(({ id, badge }) => {
+  const car = demoCars.find((item) => item.id === id);
+
+  if (!car) return null;
+
+  return {
+    ...car,
+    name: car.model,
+    price: car.pricePerDay,
+    image: car.photos?.front,
+    imageAlt: `${car.make} ${car.model}`,
+    badge,
+  };
+}).filter(Boolean);
 
 export default function HomePage() {
   return (
