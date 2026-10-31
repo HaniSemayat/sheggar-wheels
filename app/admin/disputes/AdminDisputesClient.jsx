@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { readStorage, writeStorage } from "../../../lib/storage";
@@ -13,19 +13,21 @@ export default function AdminDisputesClient() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const list = readStorage("sw_disputes_v1", [
-      {
-        id: "disp-001",
-        bookingId: "booking-001",
-        openedBy: "renter-001",
-        reason: "Vehicle fuel gauge discrepancy upon pickup",
-        description: "The tank was 3/4 full instead of full at pickup in Bole.",
-        status: "open",
-        createdAt: "2026-10-12T14:00:00Z",
-      },
-    ]);
-    setDisputes(list);
-    setReady(true);
+    startTransition(() => {
+      const list = readStorage("sw_disputes_v1", [
+        {
+          id: "disp-001",
+          bookingId: "booking-001",
+          openedBy: "renter-001",
+          reason: "Vehicle fuel gauge discrepancy upon pickup",
+          description: "The tank was 3/4 full instead of full at pickup in Bole.",
+          status: "open",
+          createdAt: "2026-10-12T14:00:00Z",
+        },
+      ]);
+      setDisputes(list);
+      setReady(true);
+    });
   }, []);
 
   function handleResolve(disputeId) {
