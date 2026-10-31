@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Megaphone, Plus, CheckCircle2, ToggleLeft, ToggleRight } from "lucide-react";
 import { readStorage, writeStorage } from "../../../lib/storage";
@@ -14,24 +14,26 @@ export default function AdminAnnouncementsClient() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const list = readStorage("sw_announcements_v1", [
-      {
-        id: "ann-001",
-        title: "Welcome to Sheggar Wheels",
-        message: "Explore Addis Ababa with verified peer-to-peer car rentals. All bookings feature demo transactions.",
-        active: true,
-        createdAt: "2026-10-25T10:00:00Z",
-      },
-      {
-        id: "ann-002",
-        title: "Bole District Expansion",
-        message: "More than 8 new listings are now available across Bole and Kazanchis.",
-        active: true,
-        createdAt: "2026-10-26T12:00:00Z",
-      },
-    ]);
-    setAnnouncements(list);
-    setReady(true);
+    startTransition(() => {
+      const list = readStorage("sw_announcements_v1", [
+        {
+          id: "ann-001",
+          title: "Welcome to Sheggar Wheels",
+          message: "Explore Addis Ababa with verified peer-to-peer car rentals. All bookings feature demo transactions.",
+          active: true,
+          createdAt: "2026-10-25T10:00:00Z",
+        },
+        {
+          id: "ann-002",
+          title: "Bole District Expansion",
+          message: "More than 8 new listings are now available across Bole and Kazanchis.",
+          active: true,
+          createdAt: "2026-10-26T12:00:00Z",
+        },
+      ]);
+      setAnnouncements(list);
+      setReady(true);
+    });
   }, []);
 
   function handleCreate(e) {
