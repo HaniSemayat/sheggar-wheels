@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { startTransition, useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import {
   Car,
@@ -27,6 +27,7 @@ export default function OwnerOverviewClient() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    startTransition(() => {
     try {
       const activeUser = JSON.parse(
         window.localStorage.getItem("sw_current_user_v1") || "null"
@@ -43,6 +44,7 @@ export default function OwnerOverviewClient() {
     setBookings(getBookings());
     setReviews(getReviews());
     setReady(true);
+    });
   }, []);
 
   const isOwner = hasRole(currentUser, "owner") || (currentUser?.id === DEFAULT_OWNER_ID);
