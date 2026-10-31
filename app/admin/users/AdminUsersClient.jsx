@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, User, ShieldCheck, ShieldAlert, CheckCircle2, UserX } from "lucide-react";
 import { getUsers } from "../../../lib/demo-data";
@@ -12,8 +12,10 @@ export default function AdminUsersClient() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setUsers(getUsers());
-    setReady(true);
+    startTransition(() => {
+      setUsers(getUsers());
+      setReady(true);
+    });
   }, []);
 
   function handleToggleStatus(userId) {
