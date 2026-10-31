@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { startTransition, useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { ArrowLeft, Navigation, Play, Pause, RotateCcw, CheckCircle2 } from "lucide-react";
 import { getBookings, getCars } from "../../../../../lib/demo-data";
@@ -29,13 +29,17 @@ export default function TripTrackingClient({ id }) {
   const markerRef = useRef(null);
 
   useEffect(() => {
-    const foundBooking = getBookings().find((b) => b.id === id);
-    if (foundBooking) {
-      setBooking(foundBooking);
-      const foundCar = getCars().find((c) => c.id === foundBooking.carId);
-      setCar(foundCar || null);
-    }
-    setReady(true);
+    startTransition(() => {
+      const foundBooking = getBookings().find((b) => b.id === id);
+
+      if (foundBooking) {
+        setBooking(foundBooking);
+        const foundCar = getCars().find((c) => c.id === foundBooking.carId);
+        setCar(foundCar || null);
+      }
+
+      setReady(true);
+    });
   }, [id]);
 
   // Leaflet map initialization
