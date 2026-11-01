@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  CarFront,
   UserRound,
   CalendarDays,
   LayoutDashboard,
@@ -122,7 +121,6 @@ export default function SiteHeader() {
           className={`site-brand ${styles["site-brand"]}`}
           aria-label="Sheggar Wheels home"
         >
-          <CarFront size={30} strokeWidth={2.5} aria-hidden="true" />
           <span>
             SHEGGAR{" "}
             <span className={styles["brand-accent"]}>WHEELS</span>
