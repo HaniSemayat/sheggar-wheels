@@ -179,26 +179,49 @@
 
 @media (max-width: 760px) {
   .site-header-inner {
-    min-height: auto;
-    padding-block: 18px;
-    flex-wrap: wrap;
-    gap: 16px;
+    position: relative;
+    min-height: 68px;
+    padding-block: 12px;
+    flex-wrap: nowrap;
+    gap: 12px;
   }
 
   .site-nav {
-    order: 3;
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 20;
     width: 100%;
-    gap: 20px;
-    overflow-x: auto;
-    padding-bottom: 2px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px 16px;
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 0 0 12px 12px;
+    background: var(--color-header);
+    box-shadow: 0 12px 24px rgb(0 0 0 / 16%);
+  }
+
+  .site-nav-open {
+    display: flex;
   }
 
   .site-nav-link {
+    padding: 13px 4px;
     white-space: nowrap;
   }
 
+  .site-nav-link + .site-nav-link {
+    border-top: 1px solid rgb(255 255 255 / 10%);
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex;
+  }
+
   .site-header-actions {
-    gap: 12px;
+    gap: 10px;
   }
 
   .header-signin {
@@ -209,7 +232,6 @@
     padding-inline: 12px;
   }
 }
-
 @media (max-width: 400px) {
   .site-brand {
     font-size: 14px;
