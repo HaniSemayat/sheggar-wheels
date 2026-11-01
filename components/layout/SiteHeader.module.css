@@ -229,10 +229,18 @@
     display: inline-flex;
     background: transparent;
     color: #ffffff;
+    border: none;
+    outline: none;
+    box-shadow: none;
   }
 
-  .mobile-nav-toggle:hover {
+  .mobile-nav-toggle:hover,
+  .mobile-nav-toggle:focus,
+  .mobile-nav-toggle:active {
     background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
   }
 
   .site-header-actions {
