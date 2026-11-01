@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   CarFront,
-  ChevronDown,
   UserRound,
   CalendarDays,
   LayoutDashboard,
@@ -145,8 +144,6 @@ export default function SiteHeader() {
                 <span className={styles["account-avatar"]} aria-hidden="true">
                   {initial}
                 </span>
-                <span className={styles["account-name"]}>{displayName}</span>
-                <ChevronDown size={16} aria-hidden="true" />
               </button>
 
               {menuOpen && (
