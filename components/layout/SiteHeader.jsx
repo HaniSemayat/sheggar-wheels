@@ -11,6 +11,8 @@ import {
   ShieldAlert,
   Car,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { hasRole } from "../../lib/auth-utils";
 import { isSupabaseConfigured, getBrowserSupabaseClient } from "../../lib/supabase/client";
@@ -28,6 +30,7 @@ export default function SiteHeader() {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -119,12 +122,16 @@ export default function SiteHeader() {
           </span>
         </Link>
 
-        <nav className={styles["site-nav"]} aria-label="Main navigation">
+        <nav
+          className={`${styles["site-nav"]} ${mobileNavOpen ? styles["site-nav-open"] : ""}`}
+          aria-label="Main navigation"
+        >
           {navigation.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={styles["site-nav-link"]}
+              onClick={() => setMobileNavOpen(false)}
             >
               {item.label}
             </Link>
@@ -132,6 +139,16 @@ export default function SiteHeader() {
         </nav>
 
         <div className={styles["site-header-actions"]}>
+          <button
+            type="button"
+            className={styles["mobile-nav-toggle"]}
+            aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={mobileNavOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setMobileNavOpen((open) => !open)}
+          >
+            {mobileNavOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
           {ready && user ? (
             <div className={styles["account-menu"]} ref={menuRef}>
               <button
