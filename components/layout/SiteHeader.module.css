@@ -244,7 +244,7 @@
   }
 
   .header-signup {
-    padding-inline: 12px;
+    display: none;
   }
 }
 @media (max-width: 400px) {
