@@ -1,6 +1,6 @@
 import Link from "next/link";
 import styles from "./page.module.css";
-import { demoCars } from "../../data/cars";
+import { publishedDemoCars } from "../../data/cars";
 import FeaturedCarCard from "../../components/cars/FeaturedCarCard";
 import CustomerReviews from "../../components/home/CustomerReviews";
 
@@ -21,10 +21,10 @@ const heroSlides = [
 
 const featuredCars = [
   { id: "toyota-corolla-2022", badge: "NEW" },
-  { id: "hyundai-tucson-2023", badge: "POPULAR" },
-  { id: "mercedes-c-class-2023", badge: "PREMIUM" },
+  { id: "byd-yuan-up-2025", badge: "POPULAR" },
+  { id: "range-rover-p550-2024", badge: "PREMIUM" },
 ].map(({ id, badge }) => {
-  const car = demoCars.find((item) => item.id === id);
+  const car = publishedDemoCars.find((item) => item.id === id);
 
   if (!car) return null;
 
