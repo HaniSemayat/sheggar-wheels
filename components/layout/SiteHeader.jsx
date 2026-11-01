@@ -32,6 +32,7 @@ export default function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const menuRef = useRef(null);
+  const headerRef = useRef(null);
 
   useEffect(() => {
     const refreshUser = () => {
@@ -63,12 +64,18 @@ export default function SiteHeader() {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuOpen(false);
       }
+
+      if (headerRef.current && !headerRef.current.contains(event.target)) {
+        setMobileNavOpen(false);
+      }
     }
 
     function closeOnEscape(event) {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        setMobileNavOpen(false);
+      }
     }
-
     document.addEventListener("mousedown", closeOnOutsideClick);
     document.addEventListener("keydown", closeOnEscape);
 
@@ -109,7 +116,7 @@ export default function SiteHeader() {
 
   return (
     <header className={styles["site-header"]}>
-      <div className={`container ${styles["site-header-inner"]}`}>
+      <div ref={headerRef} className={`container ${styles["site-header-inner"]}`}>
         <Link
           href="/"
           className={`site-brand ${styles["site-brand"]}`}
@@ -123,6 +130,7 @@ export default function SiteHeader() {
         </Link>
 
         <nav
+          id="mobile-navigation"
           className={`${styles["site-nav"]} ${mobileNavOpen ? styles["site-nav-open"] : ""}`}
           aria-label="Main navigation"
         >
