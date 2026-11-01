@@ -190,11 +190,12 @@
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
+    right: 0;
+    left: auto;
     z-index: 20;
-    width: 100%;
+    width: min(260px, calc(100vw - 32px));
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
     gap: 0;
     padding: 8px 16px;
     border: 1px solid rgb(255 255 255 / 10%);
@@ -208,7 +209,10 @@
   }
 
   .site-nav-link {
+    display: block;
+    width: 100%;
     padding: 13px 4px;
+    text-align: left;
     white-space: nowrap;
   }
 
@@ -218,6 +222,12 @@
 
   .mobile-nav-toggle {
     display: inline-flex;
+    background: transparent;
+    color: #ffffff;
+  }
+
+  .mobile-nav-toggle:hover {
+    background: transparent;
   }
 
   .site-header-actions {
