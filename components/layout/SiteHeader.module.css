@@ -175,6 +175,10 @@
 }
 
 
+/* Hidden on desktop; enabled in the mobile breakpoint */
+.mobile-nav-toggle {
+  display: none;
+}
 /* Mobile layout */
 
 @media (max-width: 760px) {
