@@ -457,7 +457,7 @@ export const demoCars = [
     description: "A large family SUV with a spacious cabin and practical layout.",
     photos: {
       front: "/images/cars/jetour-X90-plus-2023/front.webp",
-      rear: "/images/cars/jetour-X90-plus-2023/rear.wepb",
+      rear: "/images/cars/jetour-X90-plus-2023/rear.webp",
       side: "/images/cars/jetour-X90-plus-2023/side.webp",
     },
   },
