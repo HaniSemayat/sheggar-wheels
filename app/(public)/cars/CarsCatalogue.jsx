@@ -72,7 +72,10 @@ export default function CarsCatalogue({ cars: initialCars }) {
   const approvedCars = useMemo(() => {
     return cars.filter((car) => {
       const moderation = car.moderationStatus || car.status || "approved";
-      return moderation === "approved" || moderation === "available";
+      return (
+        !car.archivedAt &&
+        (moderation === "approved" || moderation === "available")
+      );
     });
   }, [cars]);
 

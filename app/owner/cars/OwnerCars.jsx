@@ -72,6 +72,34 @@ export default function OwnerCars() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function toggleArchive(carId) {
+    const car = cars.find((item) => item.id === carId);
+    const isMine =
+      car &&
+      (car.ownerId === ownerId ||
+        (ownerId === DEFAULT_OWNER_ID && car.ownerId === "user-owner-01"));
+
+    if (!isMine) return;
+
+    const archiving = !car.archivedAt;
+
+    if (
+      archiving &&
+      !window.confirm("Archive this car? It will no longer appear in the public catalogue.")
+    ) {
+      return;
+    }
+
+    const nextCars = cars.map((item) =>
+      item.id === carId
+        ? { ...item, archivedAt: archiving ? new Date().toISOString() : null }
+        : item
+    );
+
+    writeStorage(STORAGE_KEYS.cars, nextCars);
+    setCars(nextCars);
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
     setMessage("");
@@ -275,9 +303,23 @@ export default function OwnerCars() {
                     <p>{car.location} · {car.transmission} · {car.seats} seats</p>
                     <strong>{car.pricePerDay.toLocaleString()} ETB / day</strong>
                   </div>
-                  <button type="button" className={styles.secondaryButton} onClick={() => editCar(car)}>
-                    Edit
-                  </button>
+                  <div className={styles.actions}>
+                    <span>{car.archivedAt ? "Archived" : "Active listing"}</span>
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={() => editCar(car)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.secondaryButton}
+                      onClick={() => toggleArchive(car.id)}
+                    >
+                      {car.archivedAt ? "Restore" : "Archive"}
+                    </button>
+                  </div>
                 </article>
               ))}
             </div>

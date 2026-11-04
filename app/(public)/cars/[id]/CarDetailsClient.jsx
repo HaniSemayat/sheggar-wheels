@@ -151,7 +151,13 @@ export default function CarDetailsClient({ id }) {
               <span>ETB / day</span>
             </p>
             <div className={styles.bookingDivider} />
-            <BookingForm car={car} />
+            {car.archivedAt ? (
+              <p role="status">
+                This vehicle has been archived and is no longer available for booking.
+              </p>
+            ) : (
+              <BookingForm car={car} />
+            )}
             <p className={styles.demoNote}>
               <span>Demo data</span> · No payment will be collected.
             </p>
