@@ -4,7 +4,7 @@ import { startTransition, useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, XCircle, Filter, Car } from "lucide-react";
 import { getCars } from "../../../lib/demo-data";
-import { STORAGE_KEYS, writeStorage } from "../../../lib/storage";
+import { STORAGE_KEYS, readStorage, writeStorage } from "../../../lib/storage";
 import { formatETB } from "../../../lib/format";
 
 export default function AdminListingsClient() {
@@ -22,9 +22,11 @@ export default function AdminListingsClient() {
 
   const filteredCars = useMemo(() => {
     if (filter === "all") return cars;
+    if (filter === "archived") return cars.filter((c) => Boolean(c.archivedAt));
+
     return cars.filter((c) => {
       const status = c.moderationStatus || c.status || "approved";
-      return status === filter;
+      return !c.archivedAt && status === filter;
     });
   }, [cars, filter]);
 
@@ -36,6 +38,62 @@ export default function AdminListingsClient() {
     setCars(updated);
     setMsg(`Listing updated to ${status}.`);
     setTimeout(() => setMsg(""), 3000);
+  }
+
+  function toggleArchive(carId) {
+    const car = cars.find((item) => item.id === carId);
+    if (!car) return;
+
+    const archiving = !car.archivedAt;
+
+    if (
+      archiving &&
+      !window.confirm("Archive this listing? It will disappear from the public catalogue.")
+    ) {
+      return;
+    }
+
+    const updated = cars.map((item) =>
+      item.id === carId
+        ? { ...item, archivedAt: archiving ? new Date().toISOString() : null }
+        : item
+    );
+
+    if (!writeStorage(STORAGE_KEYS.cars, updated)) {
+      setMsg("Could not update the listing. Please try again.");
+      return;
+    }
+
+    setCars(updated);
+    setMsg(archiving ? "Listing archived." : "Listing restored.");
+  }
+
+  function handlePermanentDelete(carId) {
+    const car = cars.find((item) => item.id === carId);
+    if (!car) return;
+
+    const confirmed = window.confirm(
+      `Permanently delete ${car.year} ${car.make} ${car.model}? Booking and review history will be retained. This cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    const deletedIds = readStorage(STORAGE_KEYS.deletedCars, []);
+    const nextDeletedIds = [...new Set([...deletedIds, carId])];
+    const updated = cars.filter((item) => item.id !== carId);
+
+    if (!writeStorage(STORAGE_KEYS.deletedCars, nextDeletedIds)) {
+      setMsg("Could not record the permanent deletion. Please try again.");
+      return;
+    }
+
+    if (!writeStorage(STORAGE_KEYS.cars, updated)) {
+      setMsg("Deletion was recorded, but the listing could not be refreshed. Reload the page.");
+      return;
+    }
+
+    setCars(updated);
+    setMsg("Listing permanently deleted. Booking and review history was preserved.");
   }
 
   if (!ready) {
@@ -77,7 +135,7 @@ export default function AdminListingsClient() {
 
       {/* Filter Tabs */}
       <div style={{ display: "flex", gap: "8px", marginBottom: "24px", flexWrap: "wrap" }}>
-        {["all", "pending", "approved", "rejected"].map((tab) => (
+        {["all", "pending", "approved", "rejected", "archived"].map((tab) => (
           <button
             key={tab}
             type="button"
@@ -186,6 +244,40 @@ export default function AdminListingsClient() {
                     <XCircle size={15} /> Reject
                   </button>
                 )}
+
+                <button
+                  type="button"
+                  onClick={() => toggleArchive(c.id)}
+                  style={{
+                    padding: "8px 14px",
+                    borderRadius: "6px",
+                    border: "1px solid var(--color-border)",
+                    background: "var(--color-surface)",
+                    color: "var(--color-text)",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  {c.archivedAt ? "Restore" : "Archive"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handlePermanentDelete(c.id)}
+                  style={{
+                    padding: "8px 14px",
+                    borderRadius: "6px",
+                    border: "1px solid #dc2626",
+                    background: "transparent",
+                    color: "#dc2626",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete permanently
+                </button>
               </div>
             </div>
           );
